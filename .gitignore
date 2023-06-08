@@ -1,0 +1,16 @@
+.dub
+docs.json
+__dummy.html
+docs/
+/xmlmergetool
+xmlmergetool.so
+xmlmergetool.dylib
+xmlmergetool.dll
+xmlmergetool.a
+xmlmergetool.lib
+xmlmergetool-test-*
+*.exe
+*.o
+*.obj
+*.lst
+config.json

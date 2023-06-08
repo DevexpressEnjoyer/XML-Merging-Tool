@@ -1,0 +1,12 @@
+{
+	"authors": [
+		"Jakub Samson"
+	],
+	"copyright": "Copyright © 2023, Jakub Samson",
+	"dependencies": {
+		"dxml": "~>0.4.3"
+	},
+	"description": "XML merging tool written in D using metaprogramming features",
+	"license": "proprietary",
+	"name": "xmlmergetool"
+}
