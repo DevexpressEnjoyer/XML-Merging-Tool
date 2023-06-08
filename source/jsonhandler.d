@@ -1,25 +1,30 @@
-import std.stdio, std.conv, std.file, std.string;
+import std.stdio, std.conv, std.file, std.string, std.json;
 import std.exception : enforce;
-import std.json;
 
-class ChangeScope{
-    public string[] refdata, viewmodels, models;
+class ChangeScope{   
     public string sourcePath, destPath;
-    public bool existRefdata, existViewmodels, existModels;
+
+    //ONLY need to edit this tab
+    static immutable tags = ["viewmodel", "model"];
+
+    static foreach(string tag; tags){
+            mixin("public string[] " ~ tag ~ "s;\n");
+            mixin("public bool exist" ~ capitalize(tag) ~ "s;\n");
+    }
 
     this(){
         JSONValue configJson = this.handleJson();
 
-        static foreach(string type; ["refdata", "viewmodels", "models"]){
+        static foreach(string tag; tags){
             try{
-                foreach(value; configJson[type].array){
+                foreach(value; configJson[tag].array){
                     if(value.str.length > 0){
-                        mixin(type ~ ".length++;" ~ type ~ "[$-1] =  value.str; exist" ~ capitalize(type) ~ "= true;");
+                        mixin(tag ~ "s.length++;" ~ tag ~ "s[$-1] =  value.str; exist" ~ capitalize(tag) ~ "s = true;");
                     }
                 }
             }
             catch(Exception e){
-                mixin("exist" ~ capitalize(type) ~ " = false;");
+                mixin("exist" ~ capitalize(tag) ~ "s = false;");
             }
         }
     }
@@ -35,6 +40,7 @@ class ChangeScope{
         }
 
         JSONValue configJson;
+
         try{
             configJson = parseJSON(jsonContent);
         }

@@ -1,5 +1,4 @@
-import std.stdio, std.conv;
-import std.json;
+import std.stdio;
 import jsonhandler;
 
 void main()
@@ -8,7 +7,6 @@ void main()
 
 	auto changedScopes = new ChangeScope();
 
-	writeln(changedScopes.refdata, "   ", changedScopes.existRefdata);
 	writeln(changedScopes.viewmodels, "   ", changedScopes.existViewmodels);
 	writeln(changedScopes.models, "   ", changedScopes.existModels);
 }
