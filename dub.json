@@ -8,5 +8,8 @@
 	},
 	"description": "XML merging tool written in D using metaprogramming features",
 	"license": "proprietary",
-	"name": "xmlmergetool"
+	"name": "xmlmergetool",
+	"stringImportPaths": [
+		"."
+	]
 }

@@ -4,8 +4,7 @@ import std.exception : enforce;
 class ChangeScope{   
     public string sourcePath, destPath;
 
-    //ONLY need to edit this tab
-    static immutable tags = ["viewmodel", "model"];
+    static immutable tags = getTags();
 
     static foreach(string tag; tags){
             mixin("public string[] " ~ tag ~ "s;\n");
@@ -55,5 +54,19 @@ class ChangeScope{
         enforce(exists(this.destPath), "Destination file not found.");
         
         return configJson;
+    }
+
+    private static string[] getTags(){
+        static immutable string jsonContent = import("config.json");
+
+        immutable JSONValue configJson = parseJSON(jsonContent);
+
+        string[] result;
+
+        static foreach(value; configJson["tag"].array){
+            result ~= value.str;
+        }
+
+        return result;
     }
 }
