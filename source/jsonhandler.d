@@ -1,15 +1,13 @@
-import std.stdio, std.conv, std.file, std.string, std.json;
+import std.stdio, std.conv, std.file, std.string, std.json, std.typecons;
 import std.exception : enforce;
+import app;
+
+alias MergeArea = Tuple!(uint, "start", uint, "stop", string, "tagName", string, "tagId");
 
 class ChangeScope{   
     public string sourcePath, destPath;
-
+    public MergeArea[] mergeArea;
     static immutable tags = getTags();
-
-    static foreach(string tag; tags){
-            mixin("public string[] " ~ tag ~ "s;\n");
-            mixin("public bool exist" ~ capitalize(tag) ~ "s;\n");
-    }
 
     this(){
         JSONValue configJson = this.handleJson();
@@ -18,12 +16,13 @@ class ChangeScope{
             try{
                 foreach(value; configJson[tag].array){
                     if(value.str.length > 0){
-                        mixin(tag ~ "s.length++;" ~ tag ~ "s[$-1] =  value.str; exist" ~ capitalize(tag) ~ "s = true;");
+                        mergeArea.length++;
+                        mergeArea[$-1].tagName = tag;
+                        mergeArea[$-1].tagId = value.str;
                     }
                 }
             }
             catch(Exception e){
-                mixin("exist" ~ capitalize(tag) ~ "s = false;");
             }
         }
     }
@@ -51,7 +50,9 @@ class ChangeScope{
         this.destPath = configJson["destinationFilePath"].str;
 
         enforce(exists(this.sourcePath), "Source file not found.");
+        writeln("Found source XML file in path ", this.sourcePath);
         enforce(exists(this.destPath), "Destination file not found.");
+        writeln("Found destination XML file in path ", this.destPath);
         
         return configJson;
     }
