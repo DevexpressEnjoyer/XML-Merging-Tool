@@ -1,0 +1,7 @@
+{
+    "tag": ["foo", "bar"],
+    "sourceFilePath": "C:\\Users\\Kuba\\Desktop\\CL_MetadataMergeTool\\CLMergeTool\\exampleSource.xml",
+    "destinationFilePath": "C:\\Users\\Kuba\\Desktop\\CL_MetadataMergeTool\\CLMergeTool\\exampleDest.xml",
+    "viewmodel": ["testFoo"],
+    "model": ["exampleBar"]
+}
