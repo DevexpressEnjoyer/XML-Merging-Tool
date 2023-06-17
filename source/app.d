@@ -1,4 +1,4 @@
-import std.stdio, std.typecons;
+import std.stdio, std.typecons, std.file, std.string, std.conv;
 import jsonhandler, xmlhandler;
 import dxml.parser;
 
@@ -12,6 +12,7 @@ void main()
 	findMergeAreas(sourceFileContent, sourceChangedScopes.mergeArea, "source");
 	findMergeAreas(destFileContent, destChangedScopes.mergeArea, "destination");
 
-	writeln(sourceChangedScopes.mergeArea);
-	writeln(destChangedScopes.mergeArea);
+	//writeln(sourceChangedScopes.mergeArea);
+	//writeln(destChangedScopes.mergeArea);
+	writeln("\nStart merging...");
 }

@@ -21,35 +21,42 @@ void getXmlContent(ref string source, ref string dest, string sourcePath, string
 
 void findMergeAreas(string xmlContent, ref MergeArea[] mergeArea, string xmlType){
     auto xmlRange = parseXML!simpleXML(xmlContent);
-    writeln("Succesfully parsed ", xmlType, " XML file");
-
-    bool foundLine = false;
+    writeln("\nSuccesfully parsed ", xmlType, " XML file, tags found:");
+	bool foundEnd = false;
 	auto attributes = xmlRange.front.attributes;
-	while(!xmlRange.empty()){
-		foreach(ref area; mergeArea){
 
-			if(xmlRange.front.type == EntityType.elementStart){
+	foreach(ref area; mergeArea){
+		foundEnd = false;
+		xmlRange = parseXML!simpleXML(xmlContent);
+		while(!xmlRange.empty()){
+			if(xmlRange.front.type == EntityType.elementStart && xmlRange.front.name == area.tagName){
 				attributes = xmlRange.front.attributes;
-			}
-
-			if(!foundLine){
 				while(!attributes.empty){
-					if(xmlRange.front.name == area.tagName && attributes.front.name == "id" && attributes.front.value == area.tagId){
+					if(attributes.front.name == "id" && attributes.front.value == area.tagId){
+						writeln("Found start tag ", xmlRange.front.name, " with id ", attributes.front.value, " in line ", xmlRange.front.pos.line);
 						area.start = xmlRange.front.pos.line;
-						writeln("Found start of " ~ area.tagName ~ " tag with id " ~ area.tagId ~ " in line " ~ to!string(area.start) ~ "in " ~ xmlType ~ " file.");
-						foundLine = true;
+						break;
 					}
 					attributes.popFront();
 				}
-			}else{
-				if(xmlRange.front.type == EntityType.elementEnd && xmlRange.front.name == area.tagName){
-					area.stop = xmlRange.front.pos.line;
-					foundLine = false;
-					writeln("Found end of " ~ area.tagName ~ " tag with id " ~ area.tagId ~ " in line " ~ to!string(area.stop) ~ "in " ~ xmlType ~ " file.");
+			}
+			if(area.start != 0){
+				while(!xmlRange.empty() && !foundEnd){
+					if(xmlRange.front.type == EntityType.elementEnd && xmlRange.front.name == area.tagName){
+						writeln("Found end tag ", xmlRange.front.name, " with id ", attributes.front.value, " in line ", xmlRange.front.pos.line);
+						area.stop = xmlRange.front.pos.line;
+					}
+					if(area.stop == 0) xmlRange.popFront();
+					else{
+						foundEnd = true;
+					}
 				}
 			}
 
-            if(xmlRange.empty()) break;
+			if(area.stop != 0){
+				break;
+			}
+
 			xmlRange.popFront();
 		}
 	}
