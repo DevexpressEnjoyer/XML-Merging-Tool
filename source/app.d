@@ -1,5 +1,5 @@
 import std.stdio, std.typecons, std.file, std.string, std.conv;
-import jsonhandler, xmlhandler;
+import jsonhandler, xmlhandler, mergesource;
 import dxml.parser;
 
 void main()
@@ -12,7 +12,8 @@ void main()
 	findMergeAreas(sourceFileContent, sourceChangedScopes.mergeArea, "source");
 	findMergeAreas(destFileContent, destChangedScopes.mergeArea, "destination");
 
-	//writeln(sourceChangedScopes.mergeArea);
-	//writeln(destChangedScopes.mergeArea);
+	if(sourceChangedScopes.mergeArea.length != destChangedScopes.mergeArea.length) writeln("WARNING: Number or tags found is different for both files!");
 	writeln("\nStart merging...");
+
+	merge(sourceChangedScopes.sourcePath, sourceChangedScopes.destPath, sourceChangedScopes.mergeArea, destChangedScopes.mergeArea);
 }
