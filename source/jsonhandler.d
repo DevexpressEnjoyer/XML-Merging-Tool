@@ -8,7 +8,8 @@ class ChangeScope{
     public string sourcePath, destPath;
     public MergeArea[] mergeArea;
     static immutable tags = getTags();
-    static bool pathsPrinted = false;
+    static bool jsonException = false;
+    private string errorMsg;
 
     this(){
         JSONValue configJson = this.handleJson();
@@ -24,8 +25,12 @@ class ChangeScope{
                 }
             }
             catch(Exception e){
+                errorMsg = "Config.json is parsed but in a wrong format.";
+                jsonException = true;
             }
         }
+
+        if(jsonException) throw new Exception(errorMsg);
     }
 
     private JSONValue handleJson(){
@@ -44,20 +49,20 @@ class ChangeScope{
             configJson = parseJSON(jsonContent);
         }
         catch(Exception e){
-            throw new Exception("Config.json file could not be parsed.");
+            errorMsg = "Config.json could not be prased.";
+            jsonException = true;
         }
         
-        this.sourcePath = configJson["sourceFilePath"].str;
-        this.destPath = configJson["destinationFilePath"].str;
+        if(!jsonException){
+            this.sourcePath = configJson["sourceFilePath"].str;
+            this.destPath = configJson["destinationFilePath"].str;
 
-        if(!pathsPrinted){
             enforce(exists(this.sourcePath), "Source file not found.");
             writeln("\nFound source XML file in path ", this.sourcePath);
+
             enforce(exists(this.destPath), "Destination file not found.");
             writeln("Found destination XML file in path ", this.destPath);
         }
-
-        this.pathsPrinted = true;
 
         return configJson;
     }
