@@ -21,5 +21,5 @@ Narzędzie do scalania plików XML napisane w języku D. Pozwala na szybkie i pr
 2. Skonfiguruj środowisko:
    - Zainstaluj kompilator języka D (dlang.org).
 3. Uruchom narzędzie
-  ```bash
+   ```bash
    dmd -run main.d
